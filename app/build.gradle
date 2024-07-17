@@ -1,0 +1,45 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    namespace 'com.controlroom.androidmodule'
+    compileSdk 33
+
+    defaultConfig {
+        minSdk 24
+        targetSdk 33
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+compileOnly project(path: ':app:unitymodule')
+}
+
+task deleteOldJarFile(type:Delete)
+{
+    delete 'release/controlroomModule.jar'
+}
+
+task exportControlRoomJar(type:Copy)
+{
+    from('build/intermediates/aar_main_jar/default','build/intermediates/aar_main_jar/release')
+    into('release/')
+    include('classes.jar')
+    rename('classes.jar','ControlRoomModule.jar')
+
+}
+
+exportControlRoomJar.dependsOn(deleteOldJarFile,assemble)
